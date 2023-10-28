@@ -1,0 +1,97 @@
+A continuación, te proporciono un programa en Pascal que procesa la información de los viajes y realiza las tareas requeridas:
+
+```pascal
+program AnalisisViajesTren;
+
+type
+  TInfoViaje = record
+    CodigoTren: Integer;
+    Mes: Integer;
+    CantidadPasajeros: Integer;
+    CodigoCiudadDestino: Integer;
+  end;
+
+  TInfoCostoCiudad = array[1..20] of Real;
+
+var
+  Viajes: array of TInfoViaje;
+  CostoCiudadDestino: TInfoCostoCiudad;
+  CantidadViajesPorTren: array of Integer;
+  MesConMayorRecaudacion: Integer;
+  MontoMaximoRecaudado: Real;
+  TotalPasajerosPorTren: array of Integer;
+  TotalViajesPorTren: array of Integer;
+  CodigoTrenAnterior: Integer;
+  i: Integer;
+  PromedioPasajerosPorTren: Real;
+
+procedure InicializarArreglos;
+var
+  i: Integer;
+begin
+  SetLength(CantidadViajesPorTren, 0);
+  SetLength(TotalPasajerosPorTren, 0);
+  SetLength(TotalViajesPorTren, 0);
+  for i := 1 to 20 do
+    CostoCiudadDestino[i] := 0;
+end;
+
+procedure ProcesarViajes;
+var
+  i: Integer;
+  MontoRecaudado: Real;
+begin
+  MesConMayorRecaudacion := 0;
+  MontoMaximoRecaudado := 0;
+  CodigoTrenAnterior := -1;
+
+  for i := 0 to High(Viajes) do
+  begin
+    // A. Contar la cantidad de viajes por tren
+    if Viajes[i].CodigoTren <> CodigoTrenAnterior then
+    begin
+      SetLength(CantidadViajesPorTren, Viajes[i].CodigoTren);
+      CantidadViajesPorTren[Viajes[i].CodigoTren] := 1;
+      CodigoTrenAnterior := Viajes[i].CodigoTren;
+    end
+    else
+    begin
+      Inc(CantidadViajesPorTren[Viajes[i].CodigoTren]);
+    end;
+
+    // B. Calcular el mes con mayor recaudación
+    MontoRecaudado := CostoCiudadDestino[Viajes[i].CodigoCiudadDestino] * Viajes[i].CantidadPasajeros;
+    if MontoRecaudado > MontoMaximoRecaudado then
+    begin
+      MontoMaximoRecaudado := MontoRecaudado;
+      MesConMayorRecaudacion := Viajes[i].Mes;
+    end;
+
+    // C. Calcular el promedio de pasajeros por tren
+    Inc(TotalPasajerosPorTren[Viajes[i].CodigoTren], Viajes[i].CantidadPasajeros);
+    Inc(TotalViajesPorTren[Viajes[i].CodigoTren]);
+  end;
+
+  for i := 1 to High(TotalPasajerosPorTren) do
+  begin
+    if TotalViajesPorTren[i] > 0 then
+    begin
+      PromedioPasajerosPorTren := TotalPasajerosPorTren[i] / TotalViajesPorTren[i];
+      WriteLn('Promedio de pasajeros para el tren ', i, ': ', PromedioPasajerosPorTren:0:2);
+    end;
+  end;
+end;
+
+begin
+  InicializarArreglos;
+
+  // Simula la lectura de datos de los viajes y costos por ciudad destino
+  // Aquí debes llenar los datos en los arreglos Viajes y CostoCiudadDestino
+
+  ProcesarViajes;
+
+  WriteLn('Mes con mayor recaudación: ', MesConMayorRecaudacion);
+end.
+```
+
+Ten en cuenta que en el programa de arriba, se asume que ya tienes cargada la información de los viajes en el arreglo `Viajes` y los costos por ciudad destino en el arreglo `CostoCiudadDestino`. Debes completar la lectura de datos antes de ejecutar el programa. El programa realizará los cálculos requeridos y mostrará los resultados.
